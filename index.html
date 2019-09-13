@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.2/css/all.min.css" rel="stylesheet">
+	<script src="https://randomapi.com/api/?key=22B0-PTGE-HYFL-5KZ1&ref=wy1csxbk"></script>
+	<style type="text/css">
+		.row:nth-child(2n) {
+			background: #ccc;
+		}
+		.sort {
+			margin: 20px 0;
+			display: flex;
+			align-items: center;
+			justify-content: space-evenly;
+		}
+	</style>
+</head>
+<body>
+	
+	<div class="container">
+		<div class="row">
+			<div class="col-md-6 sort" style="">
+				<button class="btn sortup" onclick="users.sort('name_up')">Sort by name <i class="fa fa-arrow-down" id="sortBtn"></i></button> 
+				<button class="btn sortup" onclick="users.sort('name_down')">Sort by name <i class="fa fa-arrow-up" id="sortBtn"></i></button>
+			</div>
+			<div class="col-md-6 sort">	
+				<button class="btn" onclick="users.sort('date_up')">Sort by date <i class="fa fa-arrow-down" id="sortBtn"></i></button>
+				<button class="btn" onclick="users.sort('date_down')">Sort by date <i class="fa fa-arrow-up" id="sortBtn"></i></button>
+			</div>
+		</div>
+	</div>
+
+	<div  id="display"></div> 
+
+	<script type = "text/javascript" >
+	
+	'use strict';
+
+	function Users () {
+	
+		let displayResources = document.querySelector("#display");
+		let newObj = [];
+		let output = [];
+		
+		const createObj = ({results} = {}) => {
+			for (let i of Object.keys(results)) {
+				newObj.push({
+					name: results[i].name.first,
+					data: results[i].dob.date
+				});
+			}
+		};
+
+		const drawObj = () => {
+			output = "<div class='container'>";
+			for (let l in newObj) {
+				output += "<div class='row'><div class='col-md-6'>" + newObj[l].name + "<\/div><div class='col-md-6'>" + newObj[l].data.substring(0, 10) + "</div></div>";
+			}
+			output += "</container>";
+			displayResources.innerHTML = output;
+		};
+
+
+		this.sort = function (sort){
+
+			switch(sort) {
+				  case 'name_up':  
+				    sortData ('name', '<');
+				    break;
+				  case 'name_down':  
+				    sortData ('name', '>');
+				   break;
+				  case 'date_up':  
+				    sortData ('data', '<');
+				   break;
+				  case 'date_down':  
+				    sortData ('data', '>');
+				   break;	   	 
+			}
+
+			function sortData ( data, direction) {
+				newObj.sort(function( a, b ) {	 
+					var nameB = a[data].toLowerCase(),
+						nameA = b[data].toLowerCase()
+					if (direction === '<') {
+						if (nameA < nameB) { return -1 }
+					}  else {
+						if (nameA > nameB) { return -1 }
+					}	
+				})	
+			}
+
+			drawObj();
+
+		};
+
+		const fetchData = () => {
+			const api = 'https://randomuser.me/api/?results=20'; 
+			fetch(api)
+			.then(response => response.json())
+			.then(createObj)
+			.then(drawObj);
+		};
+
+		fetchData(); 
+
+}
+
+let users = new Users();
+
+
+</script>
+</body>
+</html>
